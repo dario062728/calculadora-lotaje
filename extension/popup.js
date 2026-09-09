@@ -37,10 +37,28 @@ function render() {
     $('view-setup').hidden = false;
   }
 
+  renderStats();
+
   const dateFmt = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
   $('dateLabel').textContent = state.committed
     ? `${dateFmt} · Plan: $${state.plan.balance} · ${state.plan.riskPercent}% por operación`
     : dateFmt;
+}
+
+function money(n) {
+  const v = Number(n) || 0;
+  return `${v >= 0 ? '+' : '-'}$${Math.abs(v).toFixed(2)}`;
+}
+
+function renderStats() {
+  const { week, allTime } = TOL.stats(state);
+  $('statWeekPnl').textContent = money(week.pnlTotal);
+  $('statWeekPnl').style.color = week.pnlTotal > 0 ? '#27ae60' : week.pnlTotal < 0 ? '#e74c3c' : '#fff';
+  $('statWeekTrades').textContent = `${week.tradesCount} operaciones`;
+
+  $('statAllPnl').textContent = money(allTime.pnlTotal);
+  $('statAllPnl').style.color = allTime.pnlTotal > 0 ? '#27ae60' : allTime.pnlTotal < 0 ? '#e74c3c' : '#fff';
+  $('statAllTrades').textContent = `${allTime.tradesCount} operaciones · ${allTime.winRate.toFixed(0)}% aciertos`;
 }
 
 async function persist() {
@@ -99,7 +117,6 @@ function bindSetupView() {
     };
     state.committed = true;
     state.tradingDate = TOL.todayStr();
-    state.trades = [];
     state.locked = false;
     state.lockReason = null;
     state.lockedAt = null;
@@ -193,12 +210,12 @@ function renderSession() {
 
   const list = $('tradeList');
   list.innerHTML = '';
-  state.trades.slice().reverse().forEach((t) => {
+  TOL.todaysTrades(state).slice().reverse().forEach((t) => {
     const li = document.createElement('li');
     const time = new Date(t.time).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
     const resultLabel = { win: 'Ganadora', loss: 'Perdedora', be: 'Break-even' }[t.result] || t.result;
     const pnlClass = t.pnl > 0 ? 'pnl-pos' : t.pnl < 0 ? 'pnl-neg' : '';
-    li.innerHTML = `<span>${time} · ${resultLabel}</span><span class="${pnlClass}">${t.pnl >= 0 ? '+' : ''}$${t.pnl.toFixed(2)}</span>`;
+    li.innerHTML = `<span>${time} · ${resultLabel}</span><span class="${pnlClass}">${money(t.pnl)}</span>`;
     list.appendChild(li);
   });
 
@@ -220,7 +237,7 @@ function bindSessionView() {
     else if (result === 'loss') pnl = -Math.abs(pnl);
     else pnl = 0;
 
-    state.trades.push({ id: Date.now(), time: Date.now(), result, pnl });
+    state.history.push({ id: Date.now(), time: Date.now(), date: state.tradingDate, result, pnl });
     const evaluated = TOL.evaluateLock(state);
     state = evaluated.state;
 
@@ -229,9 +246,17 @@ function bindSessionView() {
     render();
   });
 
-  $('finishBtn').addEventListener('click', async () => {
-    const ok = confirm('¿Marcar el plan de hoy como completado? Se bloqueará el acceso a los sitios configurados.');
-    if (!ok) return;
+  $('finishBtn').addEventListener('click', () => {
+    $('finishBtn').hidden = true;
+    $('finishConfirm').hidden = false;
+  });
+
+  $('finishCancelBtn').addEventListener('click', () => {
+    $('finishConfirm').hidden = true;
+    $('finishBtn').hidden = false;
+  });
+
+  $('finishConfirmBtn').addEventListener('click', async () => {
     state.locked = true;
     state.lockReason = 'manual';
     state.lockedAt = Date.now();

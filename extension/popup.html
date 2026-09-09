@@ -14,6 +14,22 @@
     </div>
   </header>
 
+  <section class="block stats-card">
+    <h2>📊 Estadísticas</h2>
+    <div class="stats-grid">
+      <div class="stats-col">
+        <div class="stats-col-title">Esta semana</div>
+        <div class="stats-pnl" id="statWeekPnl">$0.00</div>
+        <div class="stats-sub" id="statWeekTrades">0 operaciones</div>
+      </div>
+      <div class="stats-col">
+        <div class="stats-col-title">Total histórico</div>
+        <div class="stats-pnl" id="statAllPnl">$0.00</div>
+        <div class="stats-sub" id="statAllTrades">0 operaciones · 0% aciertos</div>
+      </div>
+    </div>
+  </section>
+
   <main id="view-setup" class="view">
     <section class="block">
       <h2>Plan del día</h2>
@@ -103,6 +119,13 @@
     </section>
 
     <button class="ghost-btn" id="finishBtn" type="button">Marcar plan como completado</button>
+    <div class="finish-confirm" id="finishConfirm" hidden>
+      <p>¿Seguro? Se bloqueará el acceso a los sitios configurados hasta tu próxima sesión.</p>
+      <div class="finish-confirm-actions">
+        <button class="secondary-btn" id="finishCancelBtn" type="button">Cancelar</button>
+        <button class="danger-btn" id="finishConfirmBtn" type="button">Sí, completar plan</button>
+      </div>
+    </div>
   </main>
 
   <main id="view-locked" class="view" hidden>

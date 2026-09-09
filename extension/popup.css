@@ -37,6 +37,34 @@ body {
   letter-spacing: 1.5px;
 }
 
+.stats-card { margin: 14px 16px 0; }
+
+.stats-card h2 {
+  font-size: 0.8rem;
+  color: #c9a84c;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.stats-col { text-align: center; }
+.stats-col:first-child { border-right: 1px solid rgba(201,168,76,0.15); }
+.stats-col-title { font-size: 0.62rem; color: #8892a4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.stats-pnl { font-size: 1.15rem; font-weight: 800; margin-bottom: 2px; }
+.stats-sub { font-size: 0.65rem; color: #8892a4; }
+
+.finish-confirm {
+  background: rgba(231,76,60,0.1);
+  border: 1px solid rgba(231,76,60,0.4);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 8px;
+}
+.finish-confirm p { font-size: 0.75rem; color: #ffb3a7; margin-bottom: 10px; line-height: 1.4; }
+.finish-confirm-actions { display: flex; gap: 8px; }
+.finish-confirm-actions .secondary-btn, .finish-confirm-actions .danger-btn { flex: 1; margin-top: 0; }
+
 .view { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
 .view[hidden] { display: none; }
 

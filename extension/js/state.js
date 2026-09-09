@@ -24,20 +24,28 @@
       },
       committed: false,
       tradingDate: null,
-      trades: [],
       locked: false,
       lockReason: null,
       lockedAt: null,
       overriddenToday: false,
       overrideLog: [],
+      history: [], // { id, time, date, result, pnl } — every trade ever logged, never cleared
     };
   }
 
-  function todayStr() {
-    const d = new Date();
+  function todayStr(d = new Date()) {
     const m = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     return `${d.getFullYear()}-${m}-${day}`;
+  }
+
+  function startOfWeekStr() {
+    const d = new Date();
+    const day = d.getDay(); // 0=Sun .. 6=Sat
+    const diffToMonday = day === 0 ? -6 : 1 - day;
+    const monday = new Date(d);
+    monday.setDate(d.getDate() + diffToMonday);
+    return todayStr(monday);
   }
 
   function normalizeDomain(raw) {
@@ -80,7 +88,6 @@
     const next = deepClone(state);
     next.committed = false;
     next.tradingDate = null;
-    next.trades = [];
     next.locked = false;
     next.lockReason = null;
     next.lockedAt = null;
@@ -88,10 +95,33 @@
     return { state: next, changed: true };
   }
 
+  function todaysTrades(state) {
+    if (!state.tradingDate) return [];
+    return state.history.filter((t) => t.date === state.tradingDate);
+  }
+
+  function aggregate(trades) {
+    const tradesCount = trades.length;
+    const pnlTotal = trades.reduce((sum, t) => sum + (Number(t.pnl) || 0), 0);
+    const wins = trades.filter((t) => t.result === 'win').length;
+    const losses = trades.filter((t) => t.result === 'loss').length;
+    const breakEven = trades.filter((t) => t.result === 'be').length;
+    const winRate = tradesCount > 0 ? (wins / tradesCount) * 100 : 0;
+    return { tradesCount, pnlTotal, wins, losses, breakEven, winRate };
+  }
+
+  // Today's totals, used for evaluating the plan's lock conditions.
   function totals(state) {
-    const tradesCount = state.trades.length;
-    const pnlTotal = state.trades.reduce((sum, t) => sum + (Number(t.pnl) || 0), 0);
+    const trades = todaysTrades(state);
+    const { tradesCount, pnlTotal } = aggregate(trades);
     return { tradesCount, pnlTotal, lossUsed: Math.max(0, -pnlTotal) };
+  }
+
+  function stats(state) {
+    const weekStart = startOfWeekStr();
+    const week = aggregate(state.history.filter((t) => t.date >= weekStart));
+    const allTime = aggregate(state.history);
+    return { week, allTime };
   }
 
   // Checks plan limits against current trades and locks if any is breached.
@@ -134,10 +164,13 @@
     LOCK_REASONS,
     defaultState,
     todayStr,
+    startOfWeekStr,
     normalizeDomain,
     parseSiteList,
     deepClone,
+    todaysTrades,
     totals,
+    stats,
     evaluateLock,
     loadState,
     saveState,

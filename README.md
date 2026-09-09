@@ -1,77 +1,39 @@
 # Bloqueo Operativo — Artalia Trading
 
-Frená la sobreoperativa: cargás tu plan de trading del día con anticipación y, una vez que lo cumplís (o decidís que ya operaste suficiente), se bloquea el acceso para que no puedas "una más".
+Frená la sobreoperativa: cargás tu plan de trading del día con anticipación y, una vez que lo cumplís, se bloquea el acceso a los sitios que elijas hasta tu próxima sesión.
 
-Hay tres formas de usarlo, según cuánto bloqueo real necesitás:
+## Usá `extension/`
 
-| | ¿Qué bloquea? | ¿Qué necesitás? |
-|---|---|---|
-| **`desktop-app/`** (recomendado) | El sitio web **y** apps de escritorio (ej. TradingView desktop) que usen ese dominio, en toda tu computadora | Tener Node.js instalado, ejecutar un launcher (pide contraseña de administrador) |
-| **`extension/`** | Solo pestañas del navegador donde esté instalada | Instalar una extensión en Chrome/Edge |
-| **`index.html`** (app web) | Nada externo — solo bloquea sus propios botones, como recordatorio de disciplina | Nada, se abre en cualquier navegador |
+Es la forma recomendada: no necesita instalar Node, no pide contraseña de administrador, no usa la Terminal. Solo una extensión de Chrome/Edge/Brave.
 
-**Si tenés la app de escritorio o del celular de TradingView (como es tu caso), usá `desktop-app/`** — es la única de las tres que puede bloquear algo fuera del navegador.
+### Instalación (2 minutos)
 
-Las tres son independientes entre sí (no comparten el plan ni las estadísticas).
+1. Abrí `chrome://extensions` (pegalo en la barra de direcciones).
+2. Arriba a la derecha, activá **"Modo de desarrollador"**.
+3. Hacé clic en **"Cargar descomprimida"**.
+4. Seleccioná la carpeta **`extension`** (la de adentro de este repositorio, no el zip completo).
+5. Te va a aparecer un ícono 🔒 en la barra del navegador (si no lo ves, tocá el ícono de rompecabezas 🧩 y fijalo).
 
-## `desktop-app/` — bloqueo real (web + apps de escritorio)
+### Cómo usarla
 
-### Cómo funciona
+1. **Estadísticas**: arriba de todo, siempre visibles — resultado de la semana y resultado + operaciones totales (con % de aciertos). Se acumulan solas, para siempre.
+2. **Plan del día**: cargás balance, riesgo por operación, máximo de operaciones, pérdida máxima diaria, objetivo de ganancia (opcional) y los sitios a bloquear (ej. `tradingview.com`). Confirmás.
+3. **Sesión**: calculadora de lotaje con el riesgo ya fijado por el plan, y vas registrando cada operación ejecutada.
+4. **Bloqueo automático**: al cumplir cualquier límite del plan (o marcar "plan completado"), la extensión bloquea de verdad el acceso a esos sitios — cualquier pestaña que intente entrar es redirigida a una pantalla de bloqueo con el resumen del día.
+5. **Reinicio**: se desbloquea solo al otro día de trading. El plan queda cargado, pero hay que reconfirmarlo.
+6. **Desbloqueo de emergencia**: requiere escribir una frase exacta que vos definiste. Queda registrado para siempre en tu historial de disciplina.
 
-Corre un pequeño servidor en tu propia computadora (nunca sale a internet, ni se conecta a nada externo). Cuando tu plan se completa, edita el archivo `hosts` de tu sistema operativo para que el dominio que elegiste (ej. `tradingview.com`) deje de resolver — eso corta tanto la pestaña del navegador como la app de escritorio, porque ambas dependen de resolver ese mismo dominio para conectarse. Por eso pide contraseña de administrador: es el mismo permiso que necesita cualquier bloqueador de sitios real (Cold Turkey, Freedom, etc.).
+### Qué bloquea y qué no
 
-1. **Estadísticas**: arriba de todo, siempre visible — resultado de la semana y resultado + operaciones totales (histórico, con % de aciertos).
-2. **Plan del día**: balance, riesgo por operación, máximo de operaciones, pérdida máxima diaria, objetivo de ganancia (opcional) y los sitios/dominios a bloquear. Al confirmar, queda fijo por el resto del día.
-3. **Sesión en curso**: vas registrando cada operación ejecutada (resultado + P&L) contra el plan.
-4. **Bloqueo automático**: al tocar cualquier límite del plan (o marcar "plan completado" manualmente), bloquea los dominios configurados en todo el sistema y muestra una pantalla con el resumen del día.
-5. **Reinicio**: se desbloquea solo al otro día de trading. El plan queda como plantilla, pero hay que reconfirmarlo.
-6. **Desbloqueo de emergencia**: requiere escribir una frase exacta definida por vos. Queda registrado para siempre en tu historial de disciplina.
+Bloquea la navegación **dentro del navegador** hacia los dominios que configuraste (cualquier pestaña, en cualquier momento). **No bloquea aplicaciones de escritorio ni del celular** (por ejemplo, la app de TradingView instalada en tu computadora o teléfono) — eso está fuera del alcance de una extensión de navegador, ningún bloqueador de este tipo puede hacerlo de forma confiable.
 
-### Instalación y uso
+Para el celular, usá la función que ya trae el teléfono — 2 minutos, una sola vez:
+- **iPhone**: Ajustes → Tiempo de Uso → Límites de Apps → elegís la app → ponés un límite.
+- **Android**: Ajustes → Bienestar Digital → Temporizadores de apps → elegís la app.
 
-1. **Instalá Node.js** (una sola vez): entrá a [nodejs.org](https://nodejs.org), descargá la versión **LTS** (botón verde) e instalala como cualquier programa (siguiente, siguiente, finalizar).
-2. Descomprimí este repositorio y entrá a la carpeta `desktop-app/`.
-3. **Windows**: doble clic en `start-windows.bat`. Va a pedir permiso de administrador (aceptá) — se abre una ventana de Windows, confirmá.
-   **Mac**: doble clic en `start-mac.command`. Se abre una Terminal pidiendo tu contraseña (la del usuario de la Mac) — escribila y Enter (no se ve mientras escribís, es normal).
-4. Se abre solo el navegador en `http://localhost:5757` con la app.
-5. Para usarla de nuevo otro día, volvé a hacer doble clic en el mismo launcher.
+## Otras carpetas de este repositorio
 
-Si ves un cartel amarillo/rojo arriba de la app diciendo que no se pudo bloquear a nivel de sistema, cerrá todo y volvé a abrir el launcher (paso 3) — seguramente se ejecutó sin permisos de administrador.
-
-### Tu app del celular (TradingView u otra)
-
-Ninguna herramienta que corra en tu computadora puede bloquear apps de tu teléfono — son dispositivos separados. Para eso usás la función que ya trae el celular:
-
-- **iPhone**: Ajustes → Tiempo de Uso → Límites de Apps → elegís TradingView → ponés un límite de 0 minutos para después de tu horario de trading.
-- **Android**: Ajustes → Bienestar Digital → Temporizadores de apps → TradingView → mismo criterio.
-
-Es un paso manual de 2 minutos, una sola vez.
-
-## `extension/` — solo navegador
-
-Mismo concepto de plan/sesión/bloqueo, pero implementado como extensión de Chrome/Edge/Brave: bloquea la navegación *dentro del navegador* hacia los sitios que configures (no toca apps de escritorio ni el celular). Útil si solo te sobreopera por pestañas del navegador y no querés instalar Node.
-
-**Instalación**: `chrome://extensions` → activar "Modo de desarrollador" → "Cargar descomprimida" → seleccionar la carpeta `extension/`.
-
-Más detalle en los comentarios del propio código (`extension/manifest.json`, `extension/popup.js`).
-
-## `index.html` — app web instalable, sin bloqueo real
-
-Página instalable como app desde el navegador (botón "Instalar app"), con el mismo plan/sesión, pero **sin poder bloquear nada externo** — solo deshabilita sus propios botones al completar el plan, como recordatorio de disciplina. Sirve si solo querés el seguimiento, sin instalar Node ni una extensión.
-
-## Estructura
-
-```
-desktop-app/                     App de escritorio: bloqueo real (recomendada)
-  server.js                      Servidor local (Node, sin dependencias externas)
-  state-store.js                 Plan, sesión, bloqueo, historial y estadísticas (archivo JSON local)
-  hosts-blocker.js               Edita el archivo hosts del sistema de forma segura (solo su propio bloque marcado)
-  public/                        Interfaz (HTML/CSS/JS)
-  start-windows.bat, start-mac.command   Launchers de doble clic
-
-extension/                       Extensión de navegador (bloqueo solo en el navegador)
-index.html, app.css, app.js      App web instalable (sin bloqueo real)
-```
+`index.html` / `app.js` (raíz) y `desktop-app/` fueron intentos anteriores (una app web instalable y una app de escritorio con Node). Quedan en el repositorio pero **no son el camino recomendado** — requerían más pasos manuales para un resultado menos confiable que la extensión. Si no las necesitás, podés ignorarlas.
 
 ---
 
