@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloqueado - Bloqueo Operativo</title>
+<link rel="stylesheet" href="blocked.css">
+</head>
+<body>
+  <main class="wrap">
+    <div class="lock-icon">🔒</div>
+    <h1 id="siteLabel">Sitio bloqueado</h1>
+    <p id="lockReasonText" class="reason"></p>
+
+    <div class="summary" id="summary"></div>
+
+    <p class="reset-note" id="resetNote"></p>
+
+    <details class="override">
+      <summary>Ya sé lo que hago, quiero desbloquear</summary>
+      <p class="override-warning">Esto queda registrado en tu historial de disciplina, sin excepciones. Vas a poder ver cuántas veces rompiste tu plan.</p>
+      <input type="text" id="overrideInput" placeholder="Escribí la frase exacta de tu plan">
+      <span class="error-text" id="overrideError"></span>
+      <button class="danger-btn" id="overrideBtn" type="button">Desbloquear de todas formas</button>
+    </details>
+
+    <div class="unlocked-panel" id="unlockedPanel" hidden>
+      <p id="unlockedText">Desbloqueado por hoy.</p>
+      <button class="primary-btn" id="goSiteBtn" type="button">Ir al sitio ahora</button>
+    </div>
+
+    <p class="override-stats" id="overrideStats"></p>
+    <p class="not-committed" id="notCommittedNote" hidden>No hay un plan activo bloqueando este sitio. Esto no debería pasar — abrí la extensión para revisar tu estado.</p>
+  </main>
+
+  <script src="js/state.js"></script>
+  <script src="blocked.js"></script>
+</body>
+</html>
