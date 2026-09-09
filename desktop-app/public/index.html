@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloqueo Operativo - Artalia Trading</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <svg viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="27.5" cy="27.5" r="26" stroke="#c9a84c" stroke-width="2"/>
+                    <path d="M15 32L23 20L30 28L40 14" stroke="#f0d080" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="40" cy="14" r="3" fill="#f0d080"/>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <h1>BLOQUEO OPERATIVO</h1>
+                <p>Artalia Trading · App de escritorio</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="status-banner" id="hostsWarning" hidden></div>
+
+        <div class="card stats-card">
+            <div class="card-title">📊 Estadísticas</div>
+            <div class="stats-grid">
+                <div class="stats-col">
+                    <div class="stats-col-title">Esta semana</div>
+                    <div class="stats-pnl" id="statWeekPnl">$0.00</div>
+                    <div class="stats-sub" id="statWeekTrades">0 operaciones</div>
+                </div>
+                <div class="stats-col">
+                    <div class="stats-col-title">Total histórico</div>
+                    <div class="stats-pnl" id="statAllPnl">$0.00</div>
+                    <div class="stats-sub" id="statAllTrades">0 operaciones · 0% de aciertos</div>
+                </div>
+            </div>
+        </div>
+
+        <main id="view-setup" class="view">
+            <div class="card">
+                <div class="card-title">Plan del día</div>
+                <p class="field-hint" style="margin-bottom:16px;">Definilo antes de operar. Al confirmar, el riesgo y los límites quedan fijos por hoy — cambiarlos requiere el desbloqueo de emergencia.</p>
+
+                <div class="form-group">
+                    <label for="planBalance">Balance de cuenta ($)</label>
+                    <input type="number" id="planBalance" min="0" step="any">
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="planRisk">Riesgo por operación (%)</label>
+                        <input type="number" id="planRisk" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="planMaxTrades">Máx. operaciones/día</label>
+                        <input type="number" id="planMaxTrades" min="0" step="1">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="planMaxLoss">Pérdida máx. diaria ($)</label>
+                        <input type="number" id="planMaxLoss" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="planProfitTarget">Objetivo de ganancia ($, opcional)</label>
+                        <input type="number" id="planProfitTarget" min="0" step="any">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="planSites">Sitios/apps a bloquear (de verdad) al completar el plan</label>
+                    <textarea id="planSites" rows="2" placeholder="tradingview.com, tuBroker.com, ..."></textarea>
+                    <span class="field-hint">Se bloquean a nivel de todo tu sistema: navegador Y apps de escritorio que usen ese dominio (ej. la app de TradingView).</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="planOverridePhrase">Frase de desbloqueo de emergencia</label>
+                    <input type="text" id="planOverridePhrase">
+                </div>
+
+                <span class="error-text" id="setupError"></span>
+                <button class="primary-btn" id="commitBtn" type="button">Confirmar y comenzar sesión</button>
+            </div>
+        </main>
+
+        <main id="view-session" class="view" hidden>
+            <div class="card">
+                <div class="card-title">Sesión de hoy</div>
+                <div class="plan-summary-line" id="planSummaryLine"></div>
+
+                <div class="progress-row"><span>Operaciones</span><span id="sessTradesLabel">0 / 0</span></div>
+                <div class="track"><div id="sessTradesBar" class="fill"></div></div>
+
+                <div class="progress-row"><span>Pérdida diaria</span><span id="sessLossLabel">$0 / $0</span></div>
+                <div class="track"><div id="sessLossBar" class="fill loss"></div></div>
+
+                <div class="progress-row" id="sessProfitRow" hidden><span>Objetivo de ganancia</span><span id="sessProfitLabel">$0 / $0</span></div>
+                <div class="track" id="sessProfitTrack" hidden><div id="sessProfitBar" class="fill profit"></div></div>
+
+                <div class="pnl-total" id="sessPnlTotal">P&amp;L del día: $0.00</div>
+            </div>
+
+            <div class="card watch-sites" id="watchSitesPanel" hidden>
+                <div class="card-title">🔒 Se van a bloquear</div>
+                <p class="field-hint">Sitios y apps de escritorio que se bloquean al completar el plan:</p>
+                <ul id="watchSitesList"></ul>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Registrar operación ejecutada</div>
+                <div class="grid-3">
+                    <select id="tradeResult">
+                        <option value="win">Ganadora</option>
+                        <option value="loss">Perdedora</option>
+                        <option value="be">Break-even</option>
+                    </select>
+                    <input type="number" id="tradePnl" placeholder="P&amp;L $" min="0" step="any">
+                    <button class="secondary-btn" id="logTradeBtn" type="button">Guardar</button>
+                </div>
+                <span class="error-text" id="tradeError"></span>
+                <ul class="trade-list" id="tradeList"></ul>
+            </div>
+
+            <button class="ghost-btn" id="finishBtn" type="button">Marcar plan como completado</button>
+        </main>
+
+        <main id="view-locked" class="view" hidden>
+            <div class="card locked-card">
+                <div class="lock-icon">🔒</div>
+                <h2 id="lockTitle">Plan completado</h2>
+                <p class="locked-desc">Tu plan de hoy terminó acá. Los sitios y apps configurados están bloqueados a nivel de todo tu sistema.</p>
+
+                <div class="summary" id="lockSummary"></div>
+
+                <p class="reset-note">Se reinicia automáticamente en tu próxima sesión de trading.</p>
+
+                <details class="override">
+                    <summary>Ya sé lo que hago, quiero desbloquear</summary>
+                    <p class="override-warning">Esto queda registrado en tu historial de disciplina, sin excepciones.</p>
+                    <input type="text" id="overrideInput" placeholder="Escribí la frase exacta">
+                    <span class="error-text" id="overrideError"></span>
+                    <button class="danger-btn" id="overrideBtn" type="button">Desbloquear de todas formas</button>
+                </details>
+
+                <p class="override-stats" id="overrideStats"></p>
+            </div>
+        </main>
+
+    </div>
+
+    <footer id="dateLabel"></footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "bloqueo-operativo-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App de escritorio: plan de trading diario, estadisticas y bloqueo real de sitios/apps al completarlo.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

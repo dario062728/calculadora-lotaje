@@ -1,69 +1,76 @@
 # Bloqueo Operativo — Artalia Trading
 
-Dos herramientas para operar con más disciplina y frenar la sobreoperativa: cargás tu plan de trading con anticipación y, una vez que lo cumplís, se bloquea el acceso para que no puedas "una más".
+Frená la sobreoperativa: cargás tu plan de trading del día con anticipación y, una vez que lo cumplís (o decidís que ya operaste suficiente), se bloquea el acceso para que no puedas "una más".
 
-1. **App instalable** (`index.html` + `app.js` + `app.css`) — plan del día, calculadora de lotaje, seguimiento de operaciones y autobloqueo de sus propios controles. Se instala como app de escritorio desde el navegador, sin terminal ni dependencias.
-2. **`extension/`** — extensión de navegador que además bloquea de verdad el acceso a los sitios que elijas (tu bróker, tu plataforma de gráficos, etc.) una vez cumplido el plan.
+Hay tres formas de usarlo, según cuánto bloqueo real necesitás:
 
-Las dos comparten el mismo diseño y la misma lógica de plan/sesión, pero **no comparten datos entre sí** (la app usa `localStorage` del navegador, la extensión usa su propio almacenamiento) — son dos herramientas complementarias, no una sincronizada con la otra.
+| | ¿Qué bloquea? | ¿Qué necesitás? |
+|---|---|---|
+| **`desktop-app/`** (recomendado) | El sitio web **y** apps de escritorio (ej. TradingView desktop) que usen ese dominio, en toda tu computadora | Tener Node.js instalado, ejecutar un launcher (pide contraseña de administrador) |
+| **`extension/`** | Solo pestañas del navegador donde esté instalada | Instalar una extensión en Chrome/Edge |
+| **`index.html`** (app web) | Nada externo — solo bloquea sus propios botones, como recordatorio de disciplina | Nada, se abre en cualquier navegador |
 
-## App instalable (`index.html`)
+**Si tenés la app de escritorio o del celular de TradingView (como es tu caso), usá `desktop-app/`** — es la única de las tres que puede bloquear algo fuera del navegador.
 
-### Instalar en el escritorio
+Las tres son independientes entre sí (no comparten el plan ni las estadísticas).
 
-1. Abrí `index.html` con Chrome o Edge (podés simplemente hacer doble clic en el archivo, o servirlo desde cualquier hosting estático / GitHub Pages).
-2. Va a aparecer un botón **"📲 Instalar app"** arriba a la derecha (o el ícono de instalar en la barra de direcciones). Hacé clic e instalala.
-3. Te va a quedar un ícono propio en el escritorio / menú de aplicaciones, que abre la app en su propia ventana, sin barra de navegador.
-
-No requiere Node, ni build, ni permisos especiales — es una PWA (Progressive Web App) estándar.
-
-### Cómo funciona
-
-1. **Plan del día**: antes de operar, cargás balance, riesgo por operación, máximo de operaciones, pérdida máxima diaria, objetivo de ganancia (opcional) y, opcionalmente, una lista de sitios a evitar (queda como recordatorio visual, ver limitación más abajo). Al confirmar, esos valores quedan fijos por el resto del día.
-2. **Sesión en curso**: calculadora de lotaje (Forex, Oro, Plata, BTC/USD, índices; modo por pips o por precio de entrada/stop) usando el riesgo ya fijado por el plan, y un registro de operaciones ejecutadas.
-3. **Autobloqueo**: en cuanto se cumple cualquier límite del plan, o marcás "plan completado", la app bloquea su propia interfaz (no podés seguir calculando lotajes ni "planificar una más") y muestra una pantalla de bloqueo con el resumen del día.
-4. **Reinicio**: al otro día de trading se desbloquea solo; el plan queda como plantilla pero hay que reconfirmarlo.
-5. **Desbloqueo de emergencia**: requiere escribir una frase exacta definida por vos mismo. Queda registrado permanentemente como historial de disciplina.
-
-### Limitación importante
-
-Como es una página web (aunque esté instalada como app), **no puede impedir que abras otras páginas o aplicaciones** — solo bloquea sus propios controles. Los "sitios a evitar" que cargás en el plan son solo un recordatorio visual en la pantalla de bloqueo, no un bloqueo real. Para bloqueo real de sitios, instalá también la extensión de navegador (`extension/`).
-
-## Extensión de navegador (`extension/`) — bloqueo real de sitios
+## `desktop-app/` — bloqueo real (web + apps de escritorio)
 
 ### Cómo funciona
 
-Mismo concepto de plan/sesión/autobloqueo que la app, pero además bloquea de verdad: cuando se cumple el plan, redirige cualquier intento de entrar a los sitios que configuraste hacia una pantalla de bloqueo, hasta tu próxima sesión.
+Corre un pequeño servidor en tu propia computadora (nunca sale a internet, ni se conecta a nada externo). Cuando tu plan se completa, edita el archivo `hosts` de tu sistema operativo para que el dominio que elegiste (ej. `tradingview.com`) deje de resolver — eso corta tanto la pestaña del navegador como la app de escritorio, porque ambas dependen de resolver ese mismo dominio para conectarse. Por eso pide contraseña de administrador: es el mismo permiso que necesita cualquier bloqueador de sitios real (Cold Turkey, Freedom, etc.).
 
-### Instalación (Chrome / Edge / Brave — navegadores basados en Chromium)
+1. **Estadísticas**: arriba de todo, siempre visible — resultado de la semana y resultado + operaciones totales (histórico, con % de aciertos).
+2. **Plan del día**: balance, riesgo por operación, máximo de operaciones, pérdida máxima diaria, objetivo de ganancia (opcional) y los sitios/dominios a bloquear. Al confirmar, queda fijo por el resto del día.
+3. **Sesión en curso**: vas registrando cada operación ejecutada (resultado + P&L) contra el plan.
+4. **Bloqueo automático**: al tocar cualquier límite del plan (o marcar "plan completado" manualmente), bloquea los dominios configurados en todo el sistema y muestra una pantalla con el resumen del día.
+5. **Reinicio**: se desbloquea solo al otro día de trading. El plan queda como plantilla, pero hay que reconfirmarlo.
+6. **Desbloqueo de emergencia**: requiere escribir una frase exacta definida por vos. Queda registrado para siempre en tu historial de disciplina.
 
-1. Abrí `chrome://extensions` (o `edge://extensions`).
-2. Activá "Modo de desarrollador" (arriba a la derecha).
-3. Elegí "Cargar descomprimida" (Load unpacked) y seleccioná la carpeta `extension/` de este repositorio.
-4. Va a aparecer el ícono 🔒 en la barra de extensiones. Abrilo para cargar tu plan del día.
+### Instalación y uso
 
-Al cargarla vas a ver el permiso "Leer y cambiar tus datos en todos los sitios web": es necesario porque la extensión no sabe de antemano qué sitios vas a querer bloquear (los definís vos), y ese es el permiso que Chrome exige para poder redirigir la navegación a *cualquier* dominio que elijas. La extensión no lee ni envía el contenido de los sitios que visitás — solo intercepta la navegación hacia los dominios que vos cargaste en el plan.
+1. **Instalá Node.js** (una sola vez): entrá a [nodejs.org](https://nodejs.org), descargá la versión **LTS** (botón verde) e instalala como cualquier programa (siguiente, siguiente, finalizar).
+2. Descomprimí este repositorio y entrá a la carpeta `desktop-app/`.
+3. **Windows**: doble clic en `start-windows.bat`. Va a pedir permiso de administrador (aceptá) — se abre una ventana de Windows, confirmá.
+   **Mac**: doble clic en `start-mac.command`. Se abre una Terminal pidiendo tu contraseña (la del usuario de la Mac) — escribila y Enter (no se ve mientras escribís, es normal).
+4. Se abre solo el navegador en `http://localhost:5757` con la app.
+5. Para usarla de nuevo otro día, volvé a hacer doble clic en el mismo launcher.
 
-### Limitaciones (a propósito)
+Si ves un cartel amarillo/rojo arriba de la app diciendo que no se pudo bloquear a nivel de sistema, cerrá todo y volvé a abrir el launcher (paso 3) — seguramente se ejecutó sin permisos de administrador.
 
-- Bloquea navegación **dentro del navegador** hacia los dominios que configuraste. No cierra ni bloquea aplicaciones nativas instaladas en tu computadora o celular (MetaTrader de escritorio, apps móviles, etc.) — eso requeriría una app nativa con permisos de sistema operativo (tipo control parental).
-- Pensada para Chrome/Edge/Brave (Manifest V3). Firefox soporta una versión de Manifest V3 pero con diferencias en el `background`; no está probado en este repo.
-- Cada perfil de navegador donde la instales tiene su propio plan y su propio historial — no se sincroniza entre dispositivos ni con la app instalable.
+### Tu app del celular (TradingView u otra)
+
+Ninguna herramienta que corra en tu computadora puede bloquear apps de tu teléfono — son dispositivos separados. Para eso usás la función que ya trae el celular:
+
+- **iPhone**: Ajustes → Tiempo de Uso → Límites de Apps → elegís TradingView → ponés un límite de 0 minutos para después de tu horario de trading.
+- **Android**: Ajustes → Bienestar Digital → Temporizadores de apps → TradingView → mismo criterio.
+
+Es un paso manual de 2 minutos, una sola vez.
+
+## `extension/` — solo navegador
+
+Mismo concepto de plan/sesión/bloqueo, pero implementado como extensión de Chrome/Edge/Brave: bloquea la navegación *dentro del navegador* hacia los sitios que configures (no toca apps de escritorio ni el celular). Útil si solo te sobreopera por pestañas del navegador y no querés instalar Node.
+
+**Instalación**: `chrome://extensions` → activar "Modo de desarrollador" → "Cargar descomprimida" → seleccionar la carpeta `extension/`.
+
+Más detalle en los comentarios del propio código (`extension/manifest.json`, `extension/popup.js`).
+
+## `index.html` — app web instalable, sin bloqueo real
+
+Página instalable como app desde el navegador (botón "Instalar app"), con el mismo plan/sesión, pero **sin poder bloquear nada externo** — solo deshabilita sus propios botones al completar el plan, como recordatorio de disciplina. Sirve si solo querés el seguimiento, sin instalar Node ni una extensión.
 
 ## Estructura
 
 ```
-index.html, app.css, app.js      App instalable (PWA): plan, calculadora, sesión y autobloqueo
-manifest.webmanifest, sw.js      Metadata e instalabilidad de la PWA
-icons/                            Íconos de la PWA (16 a 512px)
+desktop-app/                     App de escritorio: bloqueo real (recomendada)
+  server.js                      Servidor local (Node, sin dependencias externas)
+  state-store.js                 Plan, sesión, bloqueo, historial y estadísticas (archivo JSON local)
+  hosts-blocker.js               Edita el archivo hosts del sistema de forma segura (solo su propio bloque marcado)
+  public/                        Interfaz (HTML/CSS/JS)
+  start-windows.bat, start-mac.command   Launchers de doble clic
 
-extension/
-  manifest.json                  Manifest V3: permisos, popup, background, recursos accesibles
-  js/state.js                    Modelo de estado (plan, sesión, bloqueo, historial)
-  background.js                  Service worker: aplica/retira las reglas de bloqueo (declarativeNetRequest)
-  popup.html/.css/.js            Setup del plan, seguimiento de sesión y vista de bloqueo
-  blocked.html/.css/.js          Pantalla que ve el usuario al entrar a un sitio bloqueado
-  icons/                         Íconos de la extensión
+extension/                       Extensión de navegador (bloqueo solo en el navegador)
+index.html, app.css, app.js      App web instalable (sin bloqueo real)
 ```
 
 ---
