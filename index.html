@@ -3,607 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artalia Trading - Calculadora de Lotaje</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: linear-gradient(135deg, #1a1d2e 0%, #2d3150 50%, #1a1d2e 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #ffffff;
-        }
-
-        /* HEADER */
-        .header {
-            background: linear-gradient(90deg, #1a1d2e, #2d3150, #1a1d2e);
-            border-bottom: 2px solid #c9a84c;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -10%;
-            width: 30%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(201, 168, 76, 0.1), transparent);
-            transform: skewX(-20deg);
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo-icon {
-            width: 55px;
-            height: 55px;
-            position: relative;
-        }
-
-        .logo-icon svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .logo-text h1 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #c9a84c, #f0d080, #c9a84c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 2px;
-        }
-
-        .logo-text p {
-            font-size: 0.65rem;
-            color: #8892a4;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .share-btn {
-            background: linear-gradient(135deg, #c9a84c, #f0d080);
-            color: #1a1d2e;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            letter-spacing: 1px;
-        }
-
-        .share-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(201, 168, 76, 0.5);
-        }
-
-        /* MAIN CONTAINER */
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        /* TABS */
-        .tabs {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 25px;
-            background: rgba(255,255,255,0.05);
-            padding: 5px;
-            border-radius: 15px;
-            border: 1px solid rgba(201, 168, 76, 0.2);
-        }
-
-        .tab {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            background: transparent;
-            color: #8892a4;
-            letter-spacing: 1px;
-        }
-
-        .tab.active {
-            background: linear-gradient(135deg, #c9a84c, #f0d080);
-            color: #1a1d2e;
-            box-shadow: 0 4px 15px rgba(201, 168, 76, 0.4);
-        }
-
-        .tab:hover:not(.active) {
-            color: #c9a84c;
-            background: rgba(201, 168, 76, 0.1);
-        }
-
-        /* CARDS */
-        .card {
-            background: linear-gradient(145deg, rgba(45, 49, 80, 0.8), rgba(26, 29, 46, 0.9));
-            border: 1px solid rgba(201, 168, 76, 0.25);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-
-        .card-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #c9a84c;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .card-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(90deg, rgba(201, 168, 76, 0.5), transparent);
-        }
-
-        /* GRID */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-        }
-
-        /* FORM GROUPS */
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .form-group:last-child {
-            margin-bottom: 0;
-        }
-
-        .form-group label {
-            font-size: 0.78rem;
-            color: #8892a4;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 600;
-        }
-
-        .form-group input,
-        .form-group select {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(201, 168, 76, 0.3);
-            border-radius: 10px;
-            padding: 12px 15px;
-            color: #ffffff;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            outline: none;
-            width: 100%;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #c9a84c;
-            background: rgba(201, 168, 76, 0.08);
-            box-shadow: 0 0 15px rgba(201, 168, 76, 0.2);
-        }
-
-        .form-group select option {
-            background: #1a1d2e;
-            color: #ffffff;
-        }
-
-        .form-group.has-error input,
-        .form-group.has-error select {
-            border-color: #e74c3c;
-            box-shadow: 0 0 15px rgba(231, 76, 60, 0.2);
-        }
-
-        .error-text {
-            font-size: 0.72rem;
-            color: #e74c3c;
-            min-height: 14px;
-        }
-
-        .field-hint {
-            font-size: 0.68rem;
-            color: #6b7284;
-        }
-
-        /* INPUT PREFIX */
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-prefix {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #c9a84c;
-            font-weight: 700;
-            font-size: 0.9rem;
-            pointer-events: none;
-        }
-
-        .input-wrapper input {
-            padding-left: 30px;
-        }
-
-        /* SL MODE TOGGLE */
-        .sl-mode {
-            display: none;
-        }
-
-        .sl-mode.active {
-            display: block;
-        }
-
-        /* CALCULATE BUTTON */
-        .calc-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #c9a84c, #f0d080, #c9a84c);
-            background-size: 200% 200%;
-            border: none;
-            border-radius: 12px;
-            color: #1a1d2e;
-            font-size: 1.1rem;
-            font-weight: 800;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            animation: gradientShift 3s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .calc-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(201, 168, 76, 0.6);
-        }
-
-        .calc-btn:active {
-            transform: translateY(0);
-        }
-
-        /* RESULTS */
-        .results {
-            display: none;
-            margin-top: 25px;
-        }
-
-        .results.show {
-            display: block;
-            animation: fadeInUp 0.5s ease;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-        }
-
-        .result-item {
-            background: linear-gradient(145deg, rgba(201, 168, 76, 0.1), rgba(201, 168, 76, 0.05));
-            border: 1px solid rgba(201, 168, 76, 0.4);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .result-item:hover {
-            border-color: #c9a84c;
-            box-shadow: 0 5px 20px rgba(201, 168, 76, 0.2);
-            transform: translateY(-3px);
-        }
-
-        .result-item.highlight {
-            background: linear-gradient(145deg, rgba(201, 168, 76, 0.25), rgba(201, 168, 76, 0.1));
-            border: 2px solid #c9a84c;
-        }
-
-        .result-label {
-            font-size: 0.7rem;
-            color: #8892a4;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 8px;
-        }
-
-        .result-value {
-            font-size: 1.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #c9a84c, #f0d080);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .result-sub {
-            font-size: 0.75rem;
-            color: #8892a4;
-            margin-top: 4px;
-        }
-
-        .results-note {
-            margin-top: 15px;
-            font-size: 0.75rem;
-            color: #6b7284;
-            line-height: 1.5;
-        }
-
-        /* RISK INDICATOR */
-        .risk-bar {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(201, 168, 76, 0.2);
-        }
-
-        .risk-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            margin-bottom: 8px;
-            color: #8892a4;
-        }
-
-        .risk-label span:last-child {
-            font-weight: 700;
-            color: #c9a84c;
-        }
-
-        .risk-track {
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .risk-fill {
-            height: 100%;
-            border-radius: 10px;
-            transition: width 0.8s ease;
-            background: linear-gradient(90deg, #27ae60, #f39c12, #e74c3c);
-        }
-
-        /* PROMO CARD */
-        .promo-card {
-            background: linear-gradient(145deg, rgba(201, 168, 76, 0.12), rgba(26, 29, 46, 0.9));
-            border: 1px solid rgba(201, 168, 76, 0.35);
-        }
-
-        .promo-card p {
-            color: #c3c9d6;
-            font-size: 0.88rem;
-            line-height: 1.6;
-            margin-bottom: 14px;
-        }
-
-        .promo-steps {
-            list-style: none;
-            counter-reset: step;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .promo-steps li {
-            counter-increment: step;
-            display: flex;
-            gap: 12px;
-            font-size: 0.82rem;
-            color: #c3c9d6;
-            align-items: flex-start;
-        }
-
-        .promo-steps li::before {
-            content: counter(step);
-            flex-shrink: 0;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #c9a84c, #f0d080);
-            color: #1a1d2e;
-            font-weight: 800;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* SHARE MODAL */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-overlay.show {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal {
-            background: linear-gradient(145deg, #2d3150, #1a1d2e);
-            border: 1px solid rgba(201, 168, 76, 0.4);
-            border-radius: 25px;
-            padding: 35px;
-            width: 90%;
-            max-width: 480px;
-            position: relative;
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: #8892a4;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .modal-close:hover {
-            color: #c9a84c;
-        }
-
-        .modal h2 {
-            font-size: 1.3rem;
-            background: linear-gradient(135deg, #c9a84c, #f0d080);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .modal p {
-            color: #8892a4;
-            font-size: 0.85rem;
-            margin-bottom: 25px;
-        }
-
-        .share-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .share-option {
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(201, 168, 76, 0.3);
-            background: rgba(255,255,255,0.03);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        .share-option:hover {
-            border-color: #c9a84c;
-            background: rgba(201, 168, 76, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .share-option-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            background: rgba(201, 168, 76, 0.15);
-            flex-shrink: 0;
-        }
-
-        .share-option span {
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #6b7284;
-            font-size: 0.75rem;
-        }
-
-        @media (max-width: 640px) {
-            .grid-2, .grid-3, .result-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header {
-                flex-direction: column;
-                gap: 12px;
-                align-items: flex-start;
-            }
-
-            .card {
-                padding: 20px;
-            }
-
-            .share-options {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <title>Bloqueo Operativo - Artalia Trading</title>
+    <meta name="description" content="Plan de trading, calculadora de lotaje y autobloqueo para frenar la sobreoperativa.">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1a1d2e">
+    <link rel="icon" href="icons/icon32.png" sizes="32x32">
+    <link rel="icon" href="icons/icon192.png" sizes="192x192">
+    <link rel="apple-touch-icon" href="icons/icon180.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Bloqueo Operativo">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="app.css">
 </head>
 <body>
     <div class="header">
@@ -616,385 +26,227 @@
                 </svg>
             </div>
             <div class="logo-text">
-                <h1>ARTALIA TRADING</h1>
-                <p>Calculadora de Lotaje</p>
+                <h1>BLOQUEO OPERATIVO</h1>
+                <p>Artalia Trading</p>
             </div>
         </div>
-        <button class="share-btn" id="openShare" type="button">
-            <span>🔗</span><span>COMPARTIR</span>
-        </button>
+        <button id="installBtn" type="button" hidden>📲 Instalar app</button>
     </div>
 
     <div class="container">
-        <div class="tabs">
-            <button class="tab active" data-tab="pips" type="button">POR PIPS</button>
-            <button class="tab" data-tab="price" type="button">POR PRECIO</button>
-        </div>
 
-        <form id="calcForm">
+        <main id="view-setup" class="view">
             <div class="card">
-                <div class="card-title">Datos de la Cuenta</div>
+                <div class="card-title">Plan del día</div>
+                <p class="field-hint" style="margin-bottom:16px;">Definilo antes de operar. Al confirmar, el riesgo y los límites quedan fijos por hoy — cambiarlos requiere el desbloqueo de emergencia.</p>
+
+                <div class="form-group">
+                    <label for="planBalance">Balance de cuenta ($)</label>
+                    <input type="number" id="planBalance" min="0" step="any">
+                </div>
+
                 <div class="grid-2">
                     <div class="form-group">
-                        <label for="balance">Balance de Cuenta</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">$</span>
-                            <input type="number" id="balance" min="0" step="any" placeholder="1000" required>
-                        </div>
-                        <span class="error-text" data-error-for="balance"></span>
+                        <label for="planRisk">Riesgo por operación (%)</label>
+                        <input type="number" id="planRisk" min="0" step="any">
                     </div>
                     <div class="form-group">
-                        <label for="risk">Riesgo por Operación</label>
-                        <div class="input-wrapper">
-                            <input type="number" id="risk" min="0" step="any" placeholder="1" required>
-                            <span class="input-prefix" style="left:auto; right:15px;">%</span>
-                        </div>
-                        <span class="error-text" data-error-for="risk"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Instrumento</div>
-                <div class="grid-3">
-                    <div class="form-group">
-                        <label for="instrument">Par / Activo</label>
-                        <select id="instrument"></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="pipSize">Tamaño de Pip/Punto</label>
-                        <input type="number" id="pipSize" min="0" step="any" placeholder="0.0001" required>
-                        <span class="error-text" data-error-for="pipSize"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="pipValue">Valor por Pip (lote 1.0)</label>
-                        <div class="input-wrapper">
-                            <span class="input-prefix">$</span>
-                            <input type="number" id="pipValue" min="0" step="any" placeholder="10" required>
-                        </div>
-                        <span class="error-text" data-error-for="pipValue"></span>
-                    </div>
-                </div>
-                <p class="field-hint">Los valores se autocompletan como referencia. Verificá las especificaciones exactas de tu bróker antes de operar.</p>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Stop Loss</div>
-
-                <div class="sl-mode active" data-mode="pips">
-                    <div class="form-group">
-                        <label for="slPips">Distancia de Stop Loss</label>
-                        <input type="number" id="slPips" min="0" step="any" placeholder="20 (en pips/puntos)">
-                        <span class="error-text" data-error-for="slPips"></span>
+                        <label for="planMaxTrades">Máx. operaciones/día</label>
+                        <input type="number" id="planMaxTrades" min="0" step="1">
                     </div>
                 </div>
 
-                <div class="sl-mode" data-mode="price">
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label for="entryPrice">Precio de Entrada</label>
-                            <input type="number" id="entryPrice" min="0" step="any" placeholder="1.0850">
-                            <span class="error-text" data-error-for="entryPrice"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="stopPrice">Precio de Stop</label>
-                            <input type="number" id="stopPrice" min="0" step="any" placeholder="1.0820">
-                            <span class="error-text" data-error-for="stopPrice"></span>
-                        </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="planMaxLoss">Pérdida máx. diaria ($)</label>
+                        <input type="number" id="planMaxLoss" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="planProfitTarget">Objetivo de ganancia ($, opcional)</label>
+                        <input type="number" id="planProfitTarget" min="0" step="any">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="rr">Relación Riesgo/Beneficio (opcional)</label>
-                    <input type="number" id="rr" min="0" step="any" placeholder="2 (Take Profit = 2x el SL)">
+                    <label for="planSites">Sitios a evitar hoy (opcional, solo recordatorio)</label>
+                    <textarea id="planSites" rows="2" placeholder="tuBroker.com, tradingview.com/chart, ..."></textarea>
+                    <span class="field-hint">Esta app no puede bloquear otros sitios por sí sola. Para bloqueo real, instalá también la extensión de navegador (ver más abajo).</span>
                 </div>
+
+                <div class="form-group">
+                    <label for="planOverridePhrase">Frase de desbloqueo de emergencia</label>
+                    <input type="text" id="planOverridePhrase">
+                </div>
+
+                <span class="error-text" id="setupError"></span>
+                <button class="primary-btn" id="commitBtn" type="button">Confirmar y comenzar sesión</button>
             </div>
+        </main>
 
-            <button class="calc-btn" type="submit">Calcular Lotaje</button>
-        </form>
-
-        <div class="results" id="results">
+        <main id="view-session" class="view" hidden>
             <div class="card">
-                <div class="card-title">Resultado</div>
-                <div class="result-grid">
-                    <div class="result-item highlight">
-                        <div class="result-label">Lote Sugerido</div>
-                        <div class="result-value" id="resLot">0.00</div>
-                        <div class="result-sub">unidades estándar</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">Riesgo Real</div>
-                        <div class="result-value" id="resRiskMoney">$0.00</div>
-                        <div class="result-sub" id="resRiskPlanned"></div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">Distancia SL</div>
-                        <div class="result-value" id="resSlPips">0</div>
-                        <div class="result-sub">pips/puntos</div>
-                    </div>
-                </div>
+                <div class="card-title">Sesión de hoy</div>
+                <div class="plan-summary-line" id="planSummaryLine"></div>
 
-                <div class="result-grid" id="tpRow" style="margin-top:15px; display:none;">
-                    <div class="result-item">
-                        <div class="result-label">Take Profit Sugerido</div>
-                        <div class="result-value" id="resTp">-</div>
-                        <div class="result-sub" id="resTpSub"></div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">Ganancia Potencial</div>
-                        <div class="result-value" id="resGain">$0.00</div>
-                        <div class="result-sub">si toca el TP</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">Ratio Efectivo</div>
-                        <div class="result-value" id="resRatio">-</div>
-                        <div class="result-sub">beneficio : riesgo</div>
-                    </div>
-                </div>
+                <div class="progress-row"><span>Operaciones</span><span id="sessTradesLabel">0 / 0</span></div>
+                <div class="track"><div id="sessTradesBar" class="fill"></div></div>
 
-                <div class="risk-bar">
-                    <div class="risk-label">
-                        <span>Nivel de riesgo de la operación</span>
-                        <span id="riskTag">-</span>
-                    </div>
-                    <div class="risk-track">
-                        <div class="risk-fill" id="riskFill" style="width:0%"></div>
-                    </div>
-                </div>
+                <div class="progress-row"><span>Pérdida diaria</span><span id="sessLossLabel">$0 / $0</span></div>
+                <div class="track"><div id="sessLossBar" class="fill loss"></div></div>
 
-                <p class="results-note" id="roundingNote"></p>
+                <div class="progress-row" id="sessProfitRow" hidden><span>Objetivo de ganancia</span><span id="sessProfitLabel">$0 / $0</span></div>
+                <div class="track" id="sessProfitTrack" hidden><div id="sessProfitBar" class="fill profit"></div></div>
+
+                <div class="pnl-total" id="sessPnlTotal">P&amp;L del día: $0.00</div>
             </div>
-        </div>
 
-        <div class="card promo-card">
-            <div class="card-title">🔒 Bloqueo Operativo</div>
-            <p>
-                Extensión de navegador (Chrome / Edge / Firefox) para frenar la sobreoperativa: cargás tu plan
-                antes de operar (máximo de operaciones, pérdida máxima diaria, objetivo de ganancia) y, una vez
-                cumplido, bloquea automáticamente el acceso a los sitios de trading que vos elijas hasta la
-                próxima sesión.
-            </p>
-            <ol class="promo-steps">
-                <li>Abrí <code>chrome://extensions</code> (o el equivalente en tu navegador) y activá el "Modo desarrollador".</li>
-                <li>Elegí "Cargar descomprimida" y seleccioná la carpeta <code>extension/</code> de este repositorio.</li>
-                <li>Abrí el ícono de la extensión, cargá tu plan del día y confirmalo antes de empezar a operar.</li>
-            </ol>
-        </div>
+            <div class="card watch-sites" id="watchSitesPanel" hidden>
+                <div class="card-title">Recordatorio</div>
+                <p class="field-hint">Sitios que definiste evitar hasta cumplir el plan:</p>
+                <ul id="watchSitesList"></ul>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Registrar operación ejecutada</div>
+                <div class="grid-3">
+                    <select id="tradeResult">
+                        <option value="win">Ganadora</option>
+                        <option value="loss">Perdedora</option>
+                        <option value="be">Break-even</option>
+                    </select>
+                    <input type="number" id="tradePnl" placeholder="P&amp;L $" min="0" step="any">
+                    <button class="secondary-btn" id="logTradeBtn" type="button">Guardar</button>
+                </div>
+                <span class="error-text" id="tradeError"></span>
+                <ul class="trade-list" id="tradeList"></ul>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" data-tab="pips" type="button">LOTE POR PIPS</button>
+                <button class="tab" data-tab="price" type="button">LOTE POR PRECIO</button>
+            </div>
+
+            <form id="calcForm">
+                <div class="card">
+                    <div class="card-title">Instrumento</div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label for="calcInstrument">Par / Activo</label>
+                            <select id="calcInstrument"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pipSize">Tamaño de Pip/Punto</label>
+                            <input type="number" id="pipSize" min="0" step="any" required>
+                            <span class="error-text" data-error-for="pipSize"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="pipValue">Valor por Pip (lote 1.0)</label>
+                            <input type="number" id="pipValue" min="0" step="any" required>
+                            <span class="error-text" data-error-for="pipValue"></span>
+                        </div>
+                    </div>
+
+                    <div class="sl-mode active" data-mode="pips">
+                        <div class="form-group">
+                            <label for="slPips">Distancia de Stop Loss (pips/puntos)</label>
+                            <input type="number" id="slPips" min="0" step="any">
+                            <span class="error-text" data-error-for="slPips"></span>
+                        </div>
+                    </div>
+
+                    <div class="sl-mode" data-mode="price">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="entryPrice">Precio de Entrada</label>
+                                <input type="number" id="entryPrice" min="0" step="any">
+                                <span class="error-text" data-error-for="entryPrice"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="stopPrice">Precio de Stop</label>
+                                <input type="number" id="stopPrice" min="0" step="any">
+                                <span class="error-text" data-error-for="stopPrice"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rr">Relación Riesgo/Beneficio (opcional)</label>
+                        <input type="number" id="rr" min="0" step="any" placeholder="2 (Take Profit = 2x el SL)">
+                    </div>
+
+                    <button class="calc-btn" type="submit">Calcular Lotaje</button>
+                </div>
+            </form>
+
+            <div class="results" id="calcResults">
+                <div class="card">
+                    <div class="card-title">Resultado</div>
+                    <div class="result-grid">
+                        <div class="result-item highlight">
+                            <div class="result-label">Lote Sugerido</div>
+                            <div class="result-value" id="resLot">0.00</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Riesgo Real</div>
+                            <div class="result-value" id="resRiskMoney">$0.00</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Distancia SL</div>
+                            <div class="result-value" id="resSlPips">0</div>
+                        </div>
+                    </div>
+                    <div class="result-grid" id="tpRow" style="margin-top:15px; display:none;">
+                        <div class="result-item">
+                            <div class="result-label">Take Profit Sugerido</div>
+                            <div class="result-value" id="resTp">-</div>
+                            <div class="result-sub" id="resTpSub"></div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Ganancia Potencial</div>
+                            <div class="result-value" id="resGain">$0.00</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Ratio Efectivo</div>
+                            <div class="result-value" id="resRatio">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="ghost-btn" id="finishBtn" type="button">Marcar plan como completado</button>
+        </main>
+
+        <main id="view-locked" class="view" hidden>
+            <div class="card locked-card">
+                <div class="lock-icon">🔒</div>
+                <h2 id="lockTitle">Plan completado</h2>
+                <p class="locked-desc">Tu plan de hoy terminó acá.</p>
+
+                <div class="summary" id="lockSummary"></div>
+                <div class="lock-sites-reminder" id="lockSitesReminder" hidden></div>
+
+                <p class="reset-note">Se reinicia automáticamente en tu próxima sesión de trading.</p>
+
+                <details class="override">
+                    <summary>Ya sé lo que hago, quiero desbloquear</summary>
+                    <p class="override-warning">Esto queda registrado en tu historial de disciplina, sin excepciones.</p>
+                    <input type="text" id="overrideInput" placeholder="Escribí la frase exacta">
+                    <span class="error-text" id="overrideError"></span>
+                    <button class="danger-btn" id="overrideBtn" type="button">Desbloquear de todas formas</button>
+                </details>
+
+                <p class="override-stats" id="overrideStats"></p>
+
+                <div class="extension-note">
+                    <strong>¿Necesitás bloqueo real de sitios?</strong> Esta app bloquea sus propios controles, pero no puede impedir que abras otras páginas. Para eso, instalá la extensión de navegador "Bloqueo Operativo" (carpeta <code>extension/</code> del repositorio).
+                </div>
+            </div>
+        </main>
+
     </div>
 
-    <div class="modal-overlay" id="shareModal">
-        <div class="modal">
-            <button class="modal-close" id="closeShare" type="button">&times;</button>
-            <h2>Compartir Resultado</h2>
-            <p>Enviá el resultado del cálculo a donde lo necesites.</p>
-            <div class="share-options">
-                <div class="share-option" id="shareCopy">
-                    <div class="share-option-icon">📋</div>
-                    <span>Copiar texto</span>
-                </div>
-                <a class="share-option" id="shareWhatsapp" href="#" target="_blank" rel="noopener">
-                    <div class="share-option-icon">💬</div>
-                    <span>WhatsApp</span>
-                </a>
-            </div>
-        </div>
-    </div>
+    <footer id="dateLabel"></footer>
 
-    <footer>Artalia Trading &middot; Herramienta educativa, no es asesoramiento financiero.</footer>
-
-    <script>
-        const INSTRUMENTS = [
-            { id: 'EURUSD', label: 'EUR/USD', pipSize: 0.0001, pipValue: 10 },
-            { id: 'GBPUSD', label: 'GBP/USD', pipSize: 0.0001, pipValue: 10 },
-            { id: 'AUDUSD', label: 'AUD/USD', pipSize: 0.0001, pipValue: 10 },
-            { id: 'USDJPY', label: 'USD/JPY', pipSize: 0.01, pipValue: 9.3 },
-            { id: 'USDCAD', label: 'USD/CAD', pipSize: 0.0001, pipValue: 7.4 },
-            { id: 'XAUUSD', label: 'XAU/USD (Oro)', pipSize: 0.01, pipValue: 1 },
-            { id: 'XAGUSD', label: 'XAG/USD (Plata)', pipSize: 0.001, pipValue: 5 },
-            { id: 'BTCUSD', label: 'BTC/USD', pipSize: 1, pipValue: 1 },
-            { id: 'INDICES', label: 'Índices (US30/NAS100/...)', pipSize: 1, pipValue: 1 },
-            { id: 'CUSTOM', label: 'Personalizado', pipSize: '', pipValue: '' },
-        ];
-
-        const $ = (id) => document.getElementById(id);
-        const instrumentSelect = $('instrument');
-        const pipSizeInput = $('pipSize');
-        const pipValueInput = $('pipValue');
-        const slPipsInput = $('slPips');
-        const entryPriceInput = $('entryPrice');
-        const stopPriceInput = $('stopPrice');
-        const rrInput = $('rr');
-        const results = $('results');
-
-        INSTRUMENTS.forEach((inst) => {
-            const opt = document.createElement('option');
-            opt.value = inst.id;
-            opt.textContent = inst.label;
-            instrumentSelect.appendChild(opt);
-        });
-
-        instrumentSelect.addEventListener('change', () => {
-            const inst = INSTRUMENTS.find((i) => i.id === instrumentSelect.value);
-            if (!inst || inst.id === 'CUSTOM') return;
-            pipSizeInput.value = inst.pipSize;
-            pipValueInput.value = inst.pipValue;
-        });
-        instrumentSelect.value = 'EURUSD';
-        instrumentSelect.dispatchEvent(new Event('change'));
-
-        let activeMode = 'pips';
-        document.querySelectorAll('.tab').forEach((tab) => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
-                tab.classList.add('active');
-                activeMode = tab.dataset.tab;
-                document.querySelectorAll('.sl-mode').forEach((section) => {
-                    section.classList.toggle('active', section.dataset.mode === activeMode);
-                });
-                results.classList.remove('show');
-            });
-        });
-
-        function setError(fieldId, message) {
-            const field = $(fieldId);
-            const errorEl = document.querySelector(`[data-error-for="${fieldId}"]`);
-            const group = field.closest('.form-group');
-            if (errorEl) errorEl.textContent = message || '';
-            if (group) group.classList.toggle('has-error', Boolean(message));
-        }
-
-        function clearErrors() {
-            document.querySelectorAll('.error-text').forEach((el) => (el.textContent = ''));
-            document.querySelectorAll('.form-group').forEach((el) => el.classList.remove('has-error'));
-        }
-
-        function num(id) {
-            return parseFloat($(id).value);
-        }
-
-        function riskProfile(riskPercent) {
-            if (riskPercent <= 1) return { tag: 'Conservador', pct: (riskPercent / 5) * 100 };
-            if (riskPercent <= 2.5) return { tag: 'Moderado', pct: (riskPercent / 5) * 100 };
-            if (riskPercent <= 4) return { tag: 'Agresivo', pct: (riskPercent / 5) * 100 };
-            return { tag: 'Muy Agresivo', pct: 100 };
-        }
-
-        $('calcForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            clearErrors();
-            results.classList.remove('show');
-
-            const balance = num('balance');
-            const riskPercent = num('risk');
-            const pipSize = num('pipSize');
-            const pipValue = num('pipValue');
-            let valid = true;
-
-            if (!(balance > 0)) { setError('balance', 'Ingresá un balance mayor a 0'); valid = false; }
-            if (!(riskPercent > 0)) { setError('risk', 'Ingresá un riesgo mayor a 0%'); valid = false; }
-            if (!(pipSize > 0)) { setError('pipSize', 'Requerido'); valid = false; }
-            if (!(pipValue > 0)) { setError('pipValue', 'Requerido'); valid = false; }
-
-            let slPips = 0;
-            let entry = null;
-            let stop = null;
-
-            if (activeMode === 'pips') {
-                slPips = num('slPips');
-                if (!(slPips > 0)) { setError('slPips', 'Ingresá la distancia del SL'); valid = false; }
-            } else {
-                entry = num('entryPrice');
-                stop = num('stopPrice');
-                if (!(entry > 0)) { setError('entryPrice', 'Requerido'); valid = false; }
-                if (!(stop > 0)) { setError('stopPrice', 'Requerido'); valid = false; }
-                if (valid && entry === stop) { setError('stopPrice', 'Debe ser distinto al precio de entrada'); valid = false; }
-                if (valid) slPips = Math.abs(entry - stop) / pipSize;
-            }
-
-            if (!valid) return;
-
-            const riskMoneyPlanned = balance * (riskPercent / 100);
-            const rawLots = riskMoneyPlanned / (slPips * pipValue);
-            const lots = Math.floor(rawLots * 100) / 100;
-
-            if (lots <= 0) {
-                setError(activeMode === 'pips' ? 'slPips' : 'stopPrice', 'El riesgo definido no alcanza ni para un micro-lote (0.01). Aumentá el riesgo % o achicá el SL.');
-                return;
-            }
-
-            const riskMoneyActual = lots * slPips * pipValue;
-
-            $('resLot').textContent = lots.toFixed(2);
-            $('resRiskMoney').textContent = `$${riskMoneyActual.toFixed(2)}`;
-            $('resRiskPlanned').textContent = Math.abs(riskMoneyActual - riskMoneyPlanned) > 0.01
-                ? `plan: $${riskMoneyPlanned.toFixed(2)}`
-                : 'según el plan';
-            $('resSlPips').textContent = slPips.toFixed(1);
-
-            const rr = num('rr');
-            const tpRow = $('tpRow');
-            if (rr > 0) {
-                const tpPips = slPips * rr;
-                const gain = lots * tpPips * pipValue;
-                $('resGain').textContent = `$${gain.toFixed(2)}`;
-                $('resRatio').textContent = `1 : ${rr.toFixed(1)}`;
-
-                if (activeMode === 'price' && entry !== null && stop !== null) {
-                    const direction = stop < entry ? 1 : -1;
-                    const tpPrice = entry + direction * tpPips * pipSize;
-                    $('resTp').textContent = tpPrice.toFixed(5).replace(/0+$/, '').replace(/\.$/, '');
-                    $('resTpSub').textContent = `${tpPips.toFixed(1)} pips/puntos`;
-                } else {
-                    $('resTp').textContent = `${tpPips.toFixed(1)}`;
-                    $('resTpSub').textContent = 'pips/puntos de distancia';
-                }
-                tpRow.style.display = 'grid';
-            } else {
-                tpRow.style.display = 'none';
-            }
-
-            const profile = riskProfile(riskPercent);
-            $('riskTag').textContent = `${profile.tag} (${riskPercent}%)`;
-            $('riskFill').style.width = `${Math.min(profile.pct, 100)}%`;
-
-            $('roundingNote').textContent = rawLots !== lots
-                ? `El lote se redondeó hacia abajo a 0.01 para no exceder el riesgo planeado (bruto: ${rawLots.toFixed(4)}).`
-                : '';
-
-            results.classList.add('show');
-            results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-
-        function buildShareText() {
-            if (!results.classList.contains('show')) return 'Todavía no calculé el lotaje. Completá los datos en la Calculadora de Lotaje de Artalia Trading.';
-            return [
-                'Artalia Trading - Calculadora de Lotaje',
-                `Lote sugerido: ${$('resLot').textContent}`,
-                `Riesgo: ${$('resRiskMoney').textContent}`,
-                `SL: ${$('resSlPips').textContent} pips/puntos`,
-            ].join('\n');
-        }
-
-        $('openShare').addEventListener('click', () => {
-            $('shareWhatsapp').href = `https://wa.me/?text=${encodeURIComponent(buildShareText())}`;
-            $('shareModal').classList.add('show');
-        });
-        $('closeShare').addEventListener('click', () => $('shareModal').classList.remove('show'));
-        $('shareModal').addEventListener('click', (e) => {
-            if (e.target.id === 'shareModal') $('shareModal').classList.remove('show');
-        });
-
-        $('shareCopy').addEventListener('click', async () => {
-            const label = $('shareCopy').querySelector('span:last-child');
-            const original = label.textContent;
-            try {
-                await navigator.clipboard.writeText(buildShareText());
-                label.textContent = '¡Copiado!';
-            } catch {
-                label.textContent = 'No se pudo copiar';
-            }
-            setTimeout(() => { label.textContent = original; }, 1500);
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
