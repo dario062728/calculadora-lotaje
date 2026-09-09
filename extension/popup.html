@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Bloqueo Operativo</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="popup-header">
+    <span class="logo-mark">🔒</span>
+    <div>
+      <h1>Bloqueo Operativo</h1>
+      <p>Artalia Trading</p>
+    </div>
+  </header>
+
+  <main id="view-setup" class="view">
+    <section class="block">
+      <h2>Plan del día</h2>
+      <p class="hint">Definilo antes de operar. Al confirmar, el riesgo y los límites quedan fijos por hoy.</p>
+
+      <label class="field">
+        <span>Balance de cuenta ($)</span>
+        <input type="number" id="planBalance" min="0" step="any">
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Riesgo por operación (%)</span>
+          <input type="number" id="planRisk" min="0" step="any">
+        </label>
+        <label class="field">
+          <span>Máx. operaciones/día</span>
+          <input type="number" id="planMaxTrades" min="0" step="1">
+        </label>
+      </div>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Pérdida máx. diaria ($)</span>
+          <input type="number" id="planMaxLoss" min="0" step="any">
+        </label>
+        <label class="field">
+          <span>Objetivo ganancia ($, opc.)</span>
+          <input type="number" id="planProfitTarget" min="0" step="any">
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Sitios a bloquear al completar el plan</span>
+        <textarea id="planSites" rows="2" placeholder="tuBroker.com, tradingview.com/chart, ..."></textarea>
+      </label>
+      <span class="error-text" id="sitesError"></span>
+
+      <label class="field">
+        <span>Frase de desbloqueo de emergencia</span>
+        <input type="text" id="planOverridePhrase">
+      </label>
+
+      <span class="error-text" id="setupError"></span>
+      <button class="primary-btn" id="commitBtn" type="button">Confirmar y comenzar sesión</button>
+    </section>
+  </main>
+
+  <main id="view-session" class="view" hidden>
+    <section class="block">
+      <div class="progress-row"><span>Operaciones</span><span id="sessTradesLabel">0 / 0</span></div>
+      <div class="track"><div id="sessTradesBar" class="fill"></div></div>
+
+      <div class="progress-row"><span>Pérdida diaria</span><span id="sessLossLabel">$0 / $0</span></div>
+      <div class="track"><div id="sessLossBar" class="fill loss"></div></div>
+
+      <div class="progress-row" id="sessProfitRow" hidden><span>Objetivo de ganancia</span><span id="sessProfitLabel">$0 / $0</span></div>
+      <div class="track" id="sessProfitTrack" hidden><div id="sessProfitBar" class="fill profit"></div></div>
+
+      <div class="pnl-total" id="sessPnlTotal">P&amp;L del día: $0.00</div>
+    </section>
+
+    <section class="block">
+      <h2>Lote para la próxima operación</h2>
+      <select id="calcInstrument"></select>
+      <div class="field-row">
+        <input type="number" id="calcPipSize" placeholder="Tamaño pip" min="0" step="any">
+        <input type="number" id="calcPipValue" placeholder="Valor $/pip" min="0" step="any">
+      </div>
+      <input type="number" id="calcSlPips" placeholder="Distancia SL (pips/puntos)" min="0" step="any">
+      <div class="calc-result" id="calcResult">Lote sugerido: <strong>-</strong></div>
+    </section>
+
+    <section class="block">
+      <h2>Registrar operación ejecutada</h2>
+      <div class="field-row three">
+        <select id="tradeResult">
+          <option value="win">Ganadora</option>
+          <option value="loss">Perdedora</option>
+          <option value="be">Break-even</option>
+        </select>
+        <input type="number" id="tradePnl" placeholder="P&amp;L $" min="0" step="any">
+        <button class="secondary-btn" id="logTradeBtn" type="button">Guardar</button>
+      </div>
+      <span class="error-text" id="tradeError"></span>
+      <ul class="trade-list" id="tradeList"></ul>
+    </section>
+
+    <button class="ghost-btn" id="finishBtn" type="button">Marcar plan como completado</button>
+  </main>
+
+  <main id="view-locked" class="view" hidden>
+    <section class="block locked-card">
+      <div class="lock-icon">🔒</div>
+      <h2 id="lockTitle">Plan completado</h2>
+      <p id="lockReasonText"></p>
+      <div class="summary" id="lockSummary"></div>
+      <p class="reset-note">Se reinicia automáticamente en tu próxima sesión.</p>
+
+      <details class="override">
+        <summary>Ya sé lo que hago, quiero desbloquear</summary>
+        <p class="override-warning">Esto queda registrado en tu historial de disciplina, sin excepciones.</p>
+        <input type="text" id="overrideInput" placeholder="Escribí la frase exacta">
+        <span class="error-text" id="overrideError"></span>
+        <button class="danger-btn" id="overrideBtn" type="button">Desbloquear de todas formas</button>
+      </details>
+      <p class="override-stats" id="overrideStats"></p>
+    </section>
+  </main>
+
+  <footer class="popup-footer" id="dateLabel"></footer>
+
+  <script src="js/state.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
